@@ -1,0 +1,23 @@
+version: '2.2'
+services:
+    app:
+      build:
+        context: .
+        dockerfile: ./deploy/Dockerfile
+      ports:
+        - "5007:5007"
+      volumes:
+        - ./app:/code
+      environment:
+        PYTHONUNBUFFERED: 1
+        SENTRY_DSN: https://5496f2513aaec2736ed0e32e8d26e0ca@o4506115464167424.ingest.sentry.io/4506129767530496
+
+    nginx:
+      image: nginx:latest
+      volumes:
+        - ./deploy/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./deploy/etc/nginx/conf.d:/etc/nginx/conf.d:ro
+      depends_on:
+        - app
+      ports:
+        - 8080:80
